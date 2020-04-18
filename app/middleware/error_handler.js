@@ -19,9 +19,6 @@ module.exports = () => {
         msg: error.message,
         res: error.errors,
       });
-      if (status === 422) {
-        ctx.helper.fail(ctx, { code: status, res: err.errors });
-      }
     }
   };
 };

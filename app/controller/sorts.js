@@ -4,17 +4,9 @@ const Controller = require('egg').Controller;
 
 // 定义创建接口的请求参数规则
 const createRule = {
-  username: {
+  name: {
     required: true,
-    type: 'userName',
-  },
-  password: 'password',
-  email: 'email',
-  age: {
-    type: 'number', // 年龄范围0-120
-    required: false,
-    min: 0,
-    max: 120,
+    type: 'string',
   },
 };
 
@@ -42,32 +34,34 @@ class SortsController extends Controller {
     const ctx = this.ctx;
     const params = {
       ...ctx.request.body,
+      parent_id: ctx.request.body.parent_id || '0',
     };
     ctx.validate(createRule, params);
-    const user = await ctx.service.Sort.create(ctx.request.body);
-    ctx.helper.success(ctx, { msg: '创建分类成功', res: user });
+    const result = await ctx.service.Sort.create(params);
+    ctx.helper.success(ctx, { msg: '创建分类成功', res: result });
   }
 
   async update() {
     const ctx = this.ctx;
-    const user = await ctx.service.Sort.update(ctx.params.id, ctx.request.body);
-    if (!user) {
-      ctx.helper.fail(ctx, { msg: '更新分类失败', res: user });
+    console.log('----------------------------------------', ctx.service.sort)
+    const result = await ctx.service.sort.update(ctx.params.id, ctx.request.body);
+    if (!result) {
+      ctx.helper.fail(ctx, { msg: '更新分类失败', res: result });
       return;
     }
-    ctx.helper.success(ctx, { msg: '更新分类成功', res: user });
+    ctx.helper.success(ctx, { msg: '更新分类成功', res: result });
   }
 
   async destroy() {
     const ctx = this.ctx;
     const id = ctx.params.id;
-    const user = await ctx.model.Sort.findByPk(id);
-    if (!user) {
-      ctx.helper.fail(ctx, { msg: '删除分类失败', res: user });
+    const result = await ctx.model.sort.findByPk(id);
+    if (!result) {
+      ctx.helper.fail(ctx, { msg: '删除分类失败', res: result });
       return;
     }
-    await user.destroy();
-    ctx.helper.success(ctx, { msg: '删除分类成功', res: user });
+    await result.destroy();
+    ctx.helper.success(ctx, { msg: '删除分类成功', res: result });
   }
 }
 
