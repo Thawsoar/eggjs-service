@@ -27,5 +27,7 @@ module.exports = app => {
   // 用户管理
   router.resources('users', '/api/v1/users', jwt, controller.users);
   // 分类管理
-  router.resources('topics', '/api/v1/sorts', controller.sorts);
+  router.resources('sorts', '/api/v1/sorts', jwt, controller.sorts);
+  // 标签管理
+  router.resources('labels', '/api/v1/labels', jwt, controller.labels);
 };
