@@ -43,7 +43,6 @@ class SortsController extends Controller {
 
   async update() {
     const ctx = this.ctx;
-    console.log('----------------------------------------', ctx.service.sort)
     const result = await ctx.service.sort.update(ctx.params.id, ctx.request.body);
     if (!result) {
       ctx.helper.fail(ctx, { msg: '更新分类失败', res: result });
