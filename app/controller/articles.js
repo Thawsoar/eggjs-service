@@ -24,7 +24,26 @@ class ArticlesController extends Controller {
   async index() {
     const ctx = this.ctx;
     const query = { limit: toInt(ctx.query.limit), offset: toInt(ctx.query.offset) };
-    const result = await ctx.model.Article.findAll(query);
+    // const result = await ctx.model.Article.findAll(query);
+    const result = await ctx.model.Article.findAll({
+      include: [
+        {
+          model: ctx.model.Label,
+          as: 'setArtitleLabel',
+          // 指定关联表查询属性，这里表示不需要任何关联表的属性
+          through: {
+            // 指定中间表的属性，这里表示不需要任何中间表的属性
+            attributes: [
+              'alias'
+            ],
+          },
+        },
+      ],
+      where: {},
+      raw: true,
+      // 这个需要和上面的中间表属性配合，表示不忽略include属性中的attributes参数
+      includeIgnoreAttributes: false,
+    });
     ctx.helper.success(ctx, { msg: '文章列表查询成功', code: 200, res: result });
   }
 
@@ -40,12 +59,17 @@ class ArticlesController extends Controller {
       ...ctx.request.body,
     };
     ctx.validate(createRule, params);
+    console.log('-----------------------------------', params)
     const result = await ctx.service.article.create(params);
     // const result1 = await ctx.service.article.setArtitleLabel({
     //   article_id: ctx.request.body.id,
     //   sort_id: ctx.request.body.sort_id,
     // });
-    ctx.helper.success(ctx, { msg: '创建标签成功', res: result });
+    if (result) {
+      ctx.helper.success(ctx, { msg: '创建文章成功', res: result });
+    } else {
+      ctx.helper.fail(ctx, { msg: '创建文章失败', res: result });
+    }
   }
 
   async update() {

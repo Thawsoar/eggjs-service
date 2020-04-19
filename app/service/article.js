@@ -13,34 +13,33 @@ class ArticleService extends Service {
       transaction = await ctx.model.transaction();
 
       // 创建文章
-      const article = await ctx.model.Article.create({
-        params,
-      }, {
+      const article = await ctx.model.Article.create(params, {
         transaction,
       });
-
-      // 创建默认标签
-      const label = await ctx.model.Label.create({
-        name: 'note',
-      }, {
-        transaction,
-      });
+      // // 创建默认标签
+      // const label = await ctx.model.Label.create({
+      //   name: 'note',
+      // }, {
+      //   transaction,
+      // });
 
       const articleId = article && article.getDataValue('id');
-      const labelId = label && label.getDataValue('id');
-
-      if (!articleId || !labelId) {
-        throw new Error('创建文章失败');
+      const labelId = params.label;
+      // console.log('-------------------------------',articleId,labelId)
+      // if (!articleId || !labelId) {
+      //   throw new Error('创建文章失败');
+      // }
+      if (articleId && labelId) {
+        // 创建文章和标签之间的关联
+        await ctx.model.SetArtitleLabel.create({
+          article_id: articleId,
+          label_id: labelId,
+        }, {
+          transaction,
+        });
+        await transaction.commit();
       }
-      // 创建文章和标签之间的关联
-      await ctx.model.SetArtitleLabel.create({
-        article_id: articleId,
-        label_id: labelId,
-      }, {
-        transaction,
-      });
-      await transaction.commit();
-      return articleId;
+      return article;
     } catch (err) {
       ctx.logger.error(err);
       await transaction.rollback();

@@ -37,7 +37,7 @@ class SortsController extends Controller {
       parent_id: ctx.request.body.parent_id || '0',
     };
     ctx.validate(createRule, params);
-    const result = await ctx.service.Sort.create(params);
+    const result = await ctx.service.sort.create(params);
     ctx.helper.success(ctx, { msg: '创建分类成功', res: result });
   }
 

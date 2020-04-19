@@ -13,6 +13,10 @@ module.exports = app => {
       type: TEXT,
       comment: '文章标题',
     },
+    description: {
+      type: TEXT,
+      comment: '文章简介',
+    },
     content: {
       type: TEXT,
       comment: '文章内容',
