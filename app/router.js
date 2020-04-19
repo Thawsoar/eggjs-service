@@ -30,4 +30,6 @@ module.exports = app => {
   router.resources('sorts', '/api/v1/sorts', jwt, controller.sorts);
   // 标签管理
   router.resources('labels', '/api/v1/labels', jwt, controller.labels);
+  // 文章管理
+  router.resources('articles', '/api/v1/articles', jwt, controller.articles);
 };

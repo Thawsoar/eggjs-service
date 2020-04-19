@@ -17,6 +17,14 @@ module.exports = app => {
       comment: '标签描述',
     },
   });
+  // // 定义关联关系
+  Label.associate = () => {
+    Label.belongsToMany(app.model.Article, {
+      through: app.model.SetArtitleLabel,
+      as: 'partner',
+      constraints: false,
+    });
+  };
 
   return Label;
 };
