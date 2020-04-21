@@ -21,8 +21,6 @@ module.exports = app => {
   Label.associate = () => {
     Label.belongsToMany(app.model.Article, {
       through: app.model.SetArtitleLabel,
-      as: 'partner',
-      constraints: false,
     });
   };
 

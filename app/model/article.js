@@ -44,12 +44,12 @@ module.exports = app => {
     Article.belongsToMany(app.model.Label, {
       // 中间表的model
       through: app.model.SetArtitleLabel,
-      // 进行关联查询时，关联表查出来的数据模型的alias
-      as: 'setArtitleLabel',
-      // 是否采用外键进行物理关联
-      constraints: false,
     });
-    // 这里如果一个模型和多个模型都有关联关系的话，关联关系需要统一定义在这里
+
+    Article.belongsToMany(app.model.Sort, {
+      // 中间表的model
+      through: app.model.SetArtitleSort,
+    });
   };
   return Article;
 };

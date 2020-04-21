@@ -24,25 +24,20 @@ class ArticlesController extends Controller {
   async index() {
     const ctx = this.ctx;
     const query = { limit: toInt(ctx.query.limit), offset: toInt(ctx.query.offset) };
-    // const result = await ctx.model.Article.findAll(query);
+
     const result = await ctx.model.Article.findAll({
+      attributes: [ 'user_id', 'title', 'views', 'comment', 'date' ],
       include: [
         {
           model: ctx.model.Label,
-          as: 'setArtitleLabel',
-          // 指定关联表查询属性，这里表示不需要任何关联表的属性
+          attributes: [ 'id', 'name' ],
           through: {
             // 指定中间表的属性，这里表示不需要任何中间表的属性
-            attributes: [
-              'alias'
-            ],
+            attributes: [],
           },
         },
       ],
-      where: {},
-      raw: true,
-      // 这个需要和上面的中间表属性配合，表示不忽略include属性中的attributes参数
-      includeIgnoreAttributes: false,
+      includeIgnoreAttributes: true,
     });
     ctx.helper.success(ctx, { msg: '文章列表查询成功', code: 200, res: result });
   }

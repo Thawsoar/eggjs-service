@@ -4,10 +4,8 @@ class ArticleService extends Service {
 
   // 创建
   async create(params) {
-    // console.log('---------------', params)
     const { ctx } = this;
     let transaction;
-
     try {
       // 这里需要注意，egg-sequelize会将sequelize实例作为app.model对象
       transaction = await ctx.model.transaction();
@@ -16,19 +14,9 @@ class ArticleService extends Service {
       const article = await ctx.model.Article.create(params, {
         transaction,
       });
-      // // 创建默认标签
-      // const label = await ctx.model.Label.create({
-      //   name: 'note',
-      // }, {
-      //   transaction,
-      // });
-
       const articleId = article && article.getDataValue('id');
       const labelId = params.label;
-      // console.log('-------------------------------',articleId,labelId)
-      // if (!articleId || !labelId) {
-      //   throw new Error('创建文章失败');
-      // }
+      const sortId = params.sort;
       if (articleId && labelId) {
         // 创建文章和标签之间的关联
         await ctx.model.SetArtitleLabel.create({
@@ -39,26 +27,70 @@ class ArticleService extends Service {
         });
         await transaction.commit();
       }
+      if (articleId && sortId) {
+        // 创建文章和分类之间的关联
+        await ctx.model.SetArtitleLabel.create({
+          article_id: articleId,
+          sort_id: sortId,
+        }, {
+          transaction,
+        });
+        await transaction.commit();
+      }
       return article;
     } catch (err) {
       ctx.logger.error(err);
       await transaction.rollback();
     }
-    // const result = await this.app.model.Article.create(params);
-
-    // if (!result) {
-    //   this.ctx.throw(404, 'role is not found');
-    // }
-    // return result;
   }
-  // 创建
+  // 更新
   async update(id, params) {
-    const label = await this.app.model.Article.findByPk(id);
-    if (!label) {
+    const article = await this.app.model.Article.findByPk(id);
+    // const label = await this.app.model.Label.findByPk(id);
+    if (!article) {
       return false;
     }
-    await label.update(params);
-    return label;
+    // const { ctx } = this;
+    // let transaction;
+    // try {
+    //   // 这里需要注意，egg-sequelize会将sequelize实例作为app.model对象
+    //   transaction = await ctx.model.transaction();
+
+    //   // 修改文章
+    //   const updateArticle = await article.update(params, {
+    //     transaction,
+    //   });
+    //   const articleId = updateArticle && updateArticle.getDataValue('id');
+    //   const labelId = params.label;
+    //   const sortId = params.sort;
+      
+    //   if (articleId && labelId) {
+    //     // 创建文章和标签之间的关联
+    //     await ctx.model.SetArtitleLabel.update({
+    //       article_id: articleId,
+    //       label_id: labelId,
+    //     }, {
+    //       transaction,
+    //     });
+    //     await transaction.commit();
+    //   }
+    //   if (articleId && sortId) {
+    //     // 创建文章和分类之间的关联
+    //     await ctx.model.SetArtitleLabel.create({
+    //       article_id: articleId,
+    //       sort_id: sortId,
+    //     }, {
+    //       transaction,
+    //     });
+    //     await transaction.commit();
+    //   }
+    //   return article;
+    // } catch (err) {
+    //   ctx.logger.error(err);
+    //   await transaction.rollback();
+    // }
+    await article.update(params);
+    return article;
   }
   // 设置文章标签
   async setArtitleLabel(params) {

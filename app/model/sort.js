@@ -22,6 +22,11 @@ module.exports = app => {
       comment: '父分类ID',
     },
   });
-
+  // // 定义关联关系
+  Sort.associate = () => {
+    Sort.belongsToMany(app.model.Article, {
+      through: app.model.SetArtitleLabel,
+    });
+  };
   return Sort;
 };
