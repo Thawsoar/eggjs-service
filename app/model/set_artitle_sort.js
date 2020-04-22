@@ -7,7 +7,7 @@ module.exports = app => {
   function generateUUID() {
     return uuidv1().replace(/-/g, '');
   }
-  const SetArtitleSort = app.model.define('set_artitle_label', {
+  const SetArtitleSort = app.model.define('set_artitle_sort', {
     article_id: {
       type: UUID,
       primaryKey: true,
@@ -15,7 +15,7 @@ module.exports = app => {
         return generateUUID();
       },
     },
-    label_id: {
+    sort_id: {
       type: UUID,
       defaultValue: () => {
         return generateUUID();

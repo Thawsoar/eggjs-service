@@ -25,7 +25,7 @@ module.exports = app => {
   // // 定义关联关系
   Sort.associate = () => {
     Sort.belongsToMany(app.model.Article, {
-      through: app.model.SetArtitleLabel,
+      through: app.model.SetArtitleSort,
     });
   };
   return Sort;

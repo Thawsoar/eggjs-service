@@ -36,7 +36,6 @@ class LabelsController extends Controller {
       ...ctx.request.body,
     };
     ctx.validate(createRule, params);
-    console.log('---------------', ctx.service.Label)
     const result = await ctx.service.label.create(params);
     ctx.helper.success(ctx, { msg: '创建标签成功', res: result });
   }

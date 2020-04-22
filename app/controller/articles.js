@@ -26,7 +26,7 @@ class ArticlesController extends Controller {
     const query = { limit: toInt(ctx.query.limit), offset: toInt(ctx.query.offset) };
 
     const result = await ctx.model.Article.findAll({
-      attributes: [ 'user_id', 'title', 'views', 'comment', 'date' ],
+      attributes: [ 'id', 'user_id', 'title', 'views', 'comment', 'date' ],
       include: [
         {
           model: ctx.model.Label,
@@ -71,22 +71,26 @@ class ArticlesController extends Controller {
     const ctx = this.ctx;
     const result = await ctx.service.label.update(ctx.params.id, ctx.request.body);
     if (!result) {
-      ctx.helper.fail(ctx, { msg: '更新标签失败', res: result });
+      ctx.helper.fail(ctx, { msg: '更新文章失败', res: result });
       return;
     }
-    ctx.helper.success(ctx, { msg: '更新标签成功', res: result });
+    ctx.helper.success(ctx, { msg: '更新文章成功', res: result });
   }
 
   async destroy() {
     const ctx = this.ctx;
     const id = ctx.params.id;
-    const result = await ctx.model.Label.findByPk(id);
+    console.log('============================', ctx.params)
+    const result = await ctx.model.Article.findByPk(id);
+    const result1 = await ctx.model.SetArtitleLabel.findByPk(id);
+    console.log('========================', result)
     if (!result) {
-      ctx.helper.fail(ctx, { msg: '删除标签失败', res: result });
+      ctx.helper.fail(ctx, { msg: '删除文章失败', res: result });
       return;
     }
     await result.destroy();
-    ctx.helper.success(ctx, { msg: '删除标签成功', res: result });
+    await result1.destroy();
+    ctx.helper.success(ctx, { msg: '删除文章成功', res: result });
   }
 }
 
