@@ -9,35 +9,15 @@ class ArticleService extends Service {
     try {
       // 这里需要注意，egg-sequelize会将sequelize实例作为app.model对象
       transaction = await ctx.model.transaction();
-
-      // 创建文章
-      const article = await ctx.model.Article.create(params, {
+      const newArticle = await ctx.model.Article.create(params, {
         transaction,
-      });
-      const articleId = article && article.getDataValue('id');
-      const labelId = params.label;
-      const sortId = params.sort;
-      if (articleId && labelId) {
-        // 创建文章和标签之间的关联
-        await ctx.model.SetArtitleLabel.create({
-          article_id: articleId,
-          label_id: labelId,
-        }, {
-          transaction,
-        });
-        await transaction.commit();
-      }
-      if (articleId && sortId) {
-        // 创建文章和分类之间的关联
-        await ctx.model.SetArtitleLabel.create({
-          article_id: articleId,
-          sort_id: sortId,
-        }, {
-          transaction,
-        });
-        await transaction.commit();
-      }
-      return article;
+      }); // 返回创建的Article对象
+      const labels = await ctx.model.Label.findAll({ where: { id: params.label } }); // 找到对应的label_id对象
+      const sorts = await ctx.model.Label.findAll({ where: { id: params.sorts } }); // 找到对应的label_id对象
+      await newArticle.setLabels(labels, { transaction }); // 通过setLabels方法在Label表添加记录
+      await newArticle.setSorts(sorts, { transaction });
+      await transaction.commit();
+      return true;
     } catch (err) {
       ctx.logger.error(err);
       await transaction.rollback();
@@ -45,52 +25,59 @@ class ArticleService extends Service {
   }
   // 更新
   async update(id, params) {
-    const article = await this.app.model.Article.findByPk(id);
-    // const label = await this.app.model.Label.findByPk(id);
-    if (!article) {
-      return false;
+    const { ctx } = this;
+    let transaction;
+    try {
+      // 这里需要注意，egg-sequelize会将sequelize实例作为app.model对象
+      transaction = await ctx.model.transaction();
+      const labels = await ctx.model.Label.findAll({ where: { id: params.label } });
+      const sorts = await ctx.model.Sort.findAll({ where: { id: params.sort } });
+      const article = await ctx.model.Article.findByPk(id);
+      await article.update(params, { transaction });
+      await article.setLabels(labels, { transaction });
+      await article.setSorts(sorts, { transaction });
+      await transaction.commit();
+      return true;
+    } catch (err) {
+      ctx.logger.error(err);
+      await transaction.rollback();
     }
-    // const { ctx } = this;
-    // let transaction;
-    // try {
-    //   // 这里需要注意，egg-sequelize会将sequelize实例作为app.model对象
-    //   transaction = await ctx.model.transaction();
-
-    //   // 修改文章
-    //   const updateArticle = await article.update(params, {
-    //     transaction,
-    //   });
-    //   const articleId = updateArticle && updateArticle.getDataValue('id');
-    //   const labelId = params.label;
-    //   const sortId = params.sort;
-      
-    //   if (articleId && labelId) {
-    //     // 创建文章和标签之间的关联
-    //     await ctx.model.SetArtitleLabel.update({
-    //       article_id: articleId,
-    //       label_id: labelId,
-    //     }, {
-    //       transaction,
-    //     });
-    //     await transaction.commit();
-    //   }
-    //   if (articleId && sortId) {
-    //     // 创建文章和分类之间的关联
-    //     await ctx.model.SetArtitleLabel.create({
-    //       article_id: articleId,
-    //       sort_id: sortId,
-    //     }, {
-    //       transaction,
-    //     });
-    //     await transaction.commit();
-    //   }
-    //   return article;
-    // } catch (err) {
-    //   ctx.logger.error(err);
-    //   await transaction.rollback();
-    // }
-    await article.update(params);
-    return article;
+  }
+  // 删除文章
+  async destroy(id) {
+    const { ctx } = this;
+    let transaction;
+    try {
+      transaction = await ctx.model.transaction();
+      const article = await ctx.model.Article.findByPk(id, {
+        include: [
+          {
+            model: ctx.model.Label,
+            attributes: [ 'id', 'name' ],
+            through: {
+              // 指定中间表的属性，这里表示不需要任何中间表的属性
+              attributes: [],
+            },
+          },
+          {
+            model: ctx.model.Sort,
+            attributes: [ 'id', 'name' ],
+            through: {
+              // 指定中间表的属性，这里表示不需要任何中间表的属性
+              attributes: [],
+            },
+          },
+        ],
+      });
+      await article.setLabels([]);
+      await article.setSorts([]);
+      await article.destroy();
+      await transaction.commit();
+      return true;
+    } catch (err) {
+      ctx.logger.error(err);
+      await transaction.rollback();
+    }
   }
   // 设置文章标签
   async setArtitleLabel(params) {
@@ -110,17 +97,58 @@ class ArticleService extends Service {
     }
     return result;
   }
-  // 查询文章详情
-  async getArticle(id) {
-    const label = await this.app.model.Article.findOne({
-      where: {
-        id,
-      },
+  // 获取文章列表
+  async getList() {
+    const { ctx } = this;
+    const result = await ctx.model.Article.findAll({
+      attributes: [ 'id', 'user_id', 'title', 'views', 'comment', 'date' ],
+      include: [
+        {
+          model: ctx.model.Label,
+          attributes: [ 'id', 'name' ],
+          through: {
+            // 指定中间表的属性，这里表示不需要任何中间表的属性
+            attributes: [],
+          },
+        },
+        {
+          model: ctx.model.Sort,
+          attributes: [ 'id', 'name' ],
+          through: {
+            // 指定中间表的属性，这里表示不需要任何中间表的属性
+            attributes: [],
+          },
+        },
+      ],
+      includeIgnoreAttributes: true,
     });
-    if (!label) {
-      this.ctx.throw(404, 'Label is not found');
-    }
-    return label;
+    return result;
+  }
+  // 查询文章详情
+  async getDetail(id) {
+    const { ctx } = this;
+    const result = await ctx.model.Article.findByPk(id, {
+      include: [
+        {
+          model: ctx.model.Label,
+          attributes: [ 'id', 'name' ],
+          through: {
+            // 指定中间表的属性，这里表示不需要任何中间表的属性
+            attributes: [],
+          },
+        },
+        {
+          model: ctx.model.Sort,
+          attributes: [ 'id', 'name' ],
+          through: {
+            // 指定中间表的属性，这里表示不需要任何中间表的属性
+            attributes: [],
+          },
+        },
+      ],
+      includeIgnoreAttributes: true,
+    });
+    return result;
   }
 }
 

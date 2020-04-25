@@ -28,6 +28,10 @@ module.exports = {
         type: TEXT,
         comment: '文章内容',
       },
+      img_url: {
+        type: TEXT,
+        comment: '文章图片地址',
+      },
       views: {
         type: INTEGER(20),
         comment: '浏览量',
