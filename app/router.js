@@ -9,7 +9,6 @@ module.exports = app => {
   router.post('/login', controller.login.login);
   // 登出
   router.post('/logout', controller.login.logout);
-
   // github 登录获取登录用户信息
   router.post('/api/github/userInfo', controller.login.getGithubUserInfo);
   // 挂载鉴权路由
@@ -31,5 +30,5 @@ module.exports = app => {
   // 标签管理
   router.resources('labels', '/api/v1/labels', jwt, controller.labels);
   // 文章管理
-  router.resources('articles', '/api/v1/articles', jwt, controller.articles);
+  router.resources('articles', '/api/v1/articles', controller.articles);
 };

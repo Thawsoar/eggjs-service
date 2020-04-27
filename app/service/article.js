@@ -13,7 +13,7 @@ class ArticleService extends Service {
         transaction,
       }); // 返回创建的Article对象
       const labels = await ctx.model.Label.findAll({ where: { id: params.label } }); // 找到对应的label_id对象
-      const sorts = await ctx.model.Label.findAll({ where: { id: params.sorts } }); // 找到对应的label_id对象
+      const sorts = await ctx.model.Sort.findAll({ where: { id: params.sort } }); // 找到对应的label_id对象
       await newArticle.setLabels(labels, { transaction }); // 通过setLabels方法在Label表添加记录
       await newArticle.setSorts(sorts, { transaction });
       await transaction.commit();
@@ -101,7 +101,7 @@ class ArticleService extends Service {
   async getList() {
     const { ctx } = this;
     const result = await ctx.model.Article.findAll({
-      attributes: [ 'id', 'user_id', 'title', 'views', 'comment', 'date' ],
+      attributes: [ 'id', 'user_id', 'title', 'description', 'img_url', 'views', 'comment', 'date' ],
       include: [
         {
           model: ctx.model.Label,
