@@ -24,7 +24,11 @@ class ArticlesController extends Controller {
   async index() {
     const ctx = this.ctx;
     // const query = { limit: toInt(ctx.query.limit), offset: toInt(ctx.query.offset) };
-    const result = await ctx.service.article.getList();
+    const limit = toInt(ctx.query.limit) || 10;
+    const offset = toInt(ctx.query.offset) || 0;
+    const query = { limit, offset };
+
+    const result = await ctx.service.article.getList(query);
     if (result) {
       ctx.helper.success(ctx, { msg: '文章列表查询成功', code: 200, res: result });
     } else {

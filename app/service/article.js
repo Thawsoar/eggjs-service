@@ -98,9 +98,12 @@ class ArticleService extends Service {
     return result;
   }
   // 获取文章列表
-  async getList() {
+  async getList(params) {
     const { ctx } = this;
-    const result = await ctx.model.Article.findAll({
+    const { limit, offset } = params;
+    const result = await ctx.model.Article.findAndCountAll({
+      offset: (offset - 1) * limit,
+      limit: offset * limit,
       attributes: [ 'id', 'user_id', 'title', 'description', 'img_url', 'views', 'comment', 'date' ],
       include: [
         {
