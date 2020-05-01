@@ -23,6 +23,7 @@ class BlogController extends Controller {
 
   async show() {
     const ctx = this.ctx;
+    console.log('========================', ctx)
     const result = await ctx.service.article.getDetail(ctx.params.id);
     if (result) {
       ctx.helper.success(ctx, { msg: '文章详情查询成功', code: 200, res: result });

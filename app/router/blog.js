@@ -7,7 +7,7 @@ module.exports = app => {
   // // 登出
   // router.post('/logout', controller.login.logout);
   // github 登录获取登录用户信息
-  router.get('/article/list', controller.blog.index);
-  router.get('/article/detail', controller.blog.show);
+  router.get('/blog/article/list', controller.blog.index);
+  router.get('/blog/article/detail/:id', controller.blog.show);
 
 };
