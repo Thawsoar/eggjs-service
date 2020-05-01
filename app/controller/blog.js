@@ -23,12 +23,25 @@ class BlogController extends Controller {
 
   async show() {
     const ctx = this.ctx;
-    console.log('========================', ctx)
     const result = await ctx.service.article.getDetail(ctx.params.id);
     if (result) {
       ctx.helper.success(ctx, { msg: '文章详情查询成功', code: 200, res: result });
     } else {
       ctx.helper.fail(ctx, { msg: '文章详情查询失败', res: result });
+    }
+  }
+  async getErrorData() {
+    const ctx = this.ctx;
+    const result = await ctx.curl('https://www.bilibili.com/activity/web/view/data/31', {
+      dataType: 'json',
+    });
+    if (result.status === 200) {
+      const data = result.data.data.list.map(item => {
+        return item.data.img;
+      });
+      ctx.helper.success(ctx, { msg: '获取成功', code: 200, res: data });
+    } else {
+      ctx.helper.fail(ctx, { msg: '获取失败', res: null });
     }
   }
 }

@@ -9,5 +9,6 @@ module.exports = app => {
   // github 登录获取登录用户信息
   router.get('/blog/article/list', controller.blog.index);
   router.get('/blog/article/detail/:id', controller.blog.show);
+  router.get('/blog/getErrorData', controller.blog.getErrorData);
 
 };
