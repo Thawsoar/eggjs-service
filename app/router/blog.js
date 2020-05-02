@@ -10,5 +10,6 @@ module.exports = app => {
   router.get('/blog/article/list', controller.blog.index);
   router.get('/blog/article/detail/:id', controller.blog.show);
   router.get('/blog/getErrorData', controller.blog.getErrorData);
+  router.get('/blog/getFollowList', controller.blog.getFollowList);
 
 };
