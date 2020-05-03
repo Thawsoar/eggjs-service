@@ -20,7 +20,7 @@ class LabelService extends Service {
     await label.update(params);
     return label;
   }
-  // 查询用户信息
+  // 查询标签详情
   async getLabel(id) {
     const label = await this.app.model.Label.findOne({
       where: {

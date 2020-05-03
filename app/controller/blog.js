@@ -40,6 +40,27 @@ class BlogController extends Controller {
       ctx.helper.fail(ctx, { msg: '文章详情查询失败', res: result });
     }
   }
+  /**
+   * 标签列表
+   * limit 每页文章数量
+   * offset 页数
+   * @memberof BlogController
+   */
+  async getTagsList() {
+    const ctx = this.ctx;
+    const limit = toInt(ctx.query.limit) || 10;
+    const offset = toInt(ctx.query.offset) || 1;
+    const query = { limit, offset };
+    // const result = await ctx.model.Label.findAll(query);
+    const sql = 'SELECT * FROM label';
+    console.log('======================', ctx.app.Sequelize)
+    const result = await ctx.app.model.query(sql, { type: 'SELECT' });
+    if (result) {
+      ctx.helper.success(ctx, { msg: '文章列表查询成功', code: 200, res: result });
+    } else {
+      ctx.helper.fail(ctx, { msg: '文章列表查询失败', res: result });
+    }
+  }
   // B站404页面 漫画
   async getErrorData() {
     const ctx = this.ctx;
@@ -84,7 +105,6 @@ class BlogController extends Controller {
       },
     });
     if (result.status === 200) {
-      console.log(result.status, result.data.data)
       ctx.helper.success(ctx, { msg: '获取成功', code: 200, res: result.data.data });
     } else {
       ctx.helper.fail(ctx, { msg: '获取失败', res: null });

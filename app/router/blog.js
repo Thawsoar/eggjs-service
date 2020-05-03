@@ -7,9 +7,20 @@ module.exports = app => {
   // // 登出
   // router.post('/logout', controller.login.logout);
   // github 登录获取登录用户信息
+
+  // 获取文章列表
   router.get('/blog/article/list', controller.blog.index);
+
+  // 获取文章详情
   router.get('/blog/article/detail/:id', controller.blog.show);
+
+  // 获取错误页面
   router.get('/blog/getErrorData', controller.blog.getErrorData);
+
+  // 获取番剧列表
   router.get('/blog/getFollowList', controller.blog.getFollowList);
+
+  // 获取标签列表
+  router.get('/blog/getTagsList', controller.blog.getTagsList);
 
 };
