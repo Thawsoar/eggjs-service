@@ -18,7 +18,8 @@ class BlogController extends Controller {
     const ctx = this.ctx;
     const limit = toInt(ctx.query.limit) || 10;
     const offset = toInt(ctx.query.offset) || 1;
-    const query = { limit, offset };
+    const { name, label_id } = ctx.query;
+    const query = { limit, offset, name, label_id };
     const result = await ctx.service.article.getList(query);
     if (result) {
       ctx.helper.success(ctx, { msg: '文章列表查询成功', code: 200, res: result });
@@ -33,7 +34,7 @@ class BlogController extends Controller {
    */
   async show() {
     const ctx = this.ctx;
-    const result = await ctx.service.article.getDetail(ctx.params.id);
+    const result = await ctx.service.blog.getDetail(ctx.params.id);
     if (result) {
       ctx.helper.success(ctx, { msg: '文章详情查询成功', code: 200, res: result });
     } else {
@@ -48,12 +49,13 @@ class BlogController extends Controller {
    */
   async getTagsList() {
     const ctx = this.ctx;
-    const limit = toInt(ctx.query.limit) || 10;
-    const offset = toInt(ctx.query.offset) || 1;
-    const query = { limit, offset };
-    // const result = await ctx.model.Label.findAll(query);
-    const sql = 'SELECT * FROM label';
-    console.log('======================', ctx.app.Sequelize)
+    const sql = `
+      SELECT l.name, l.id, s.count
+      FROM label l
+      INNER JOIN
+      (SELECT label_id, COUNT(*) as count FROM set_artitle_label GROUP BY label_id) s
+      ON l.id = s.label_id;
+    `;
     const result = await ctx.app.model.query(sql, { type: 'SELECT' });
     if (result) {
       ctx.helper.success(ctx, { msg: '文章列表查询成功', code: 200, res: result });
@@ -109,6 +111,16 @@ class BlogController extends Controller {
     } else {
       ctx.helper.fail(ctx, { msg: '获取失败', res: null });
     }
+  }
+  /**
+   * 菜单
+   * @memberof BlogController
+   */
+  async getMenusList() {
+    const ctx = this.ctx;
+    const query = { limit: toInt(ctx.query.limit), offset: toInt(ctx.query.offset) };
+    const result = await ctx.model.Sort.findAll(query);
+    ctx.helper.success(ctx, { msg: '分类列表查询成功', code: 200, res: result });
   }
 }
 

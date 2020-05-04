@@ -3,7 +3,7 @@
 module.exports = {
   // 在执行数据库升级时调用的函数，创建 article 表
   up: async (queryInterface, Sequelize) => {
-    const { INTEGER, DATE, UUID, TEXT } = Sequelize;
+    const { INTEGER, DATE, UUID, TEXT, STRING } = Sequelize;
     await queryInterface.createTable('article', {
       id: {
         type: UUID,
@@ -17,11 +17,11 @@ module.exports = {
         comment: '用户ID',
       },
       title: {
-        type: TEXT,
+        type: STRING(300),
         comment: '文章标题',
       },
       description: {
-        type: TEXT,
+        type: STRING(300),
         comment: '文章简介',
       },
       content: {
@@ -29,7 +29,7 @@ module.exports = {
         comment: '文章内容',
       },
       img_url: {
-        type: TEXT,
+        type: STRING(300),
         comment: '文章图片地址',
       },
       views: {

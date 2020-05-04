@@ -3,18 +3,18 @@
 const db = require('../db');
 
 module.exports = app => {
-  const { UUID, TEXT, INTEGER, DATE } = app.Sequelize;
+  const { UUID, TEXT, INTEGER, DATE, STRING } = app.Sequelize;
   const Article = db.defineModel(app, 'article', {
     user_id: {
       type: UUID,
       comment: '用户ID',
     },
     title: {
-      type: TEXT,
+      type: STRING(300),
       comment: '文章标题',
     },
     description: {
-      type: TEXT,
+      type: STRING(300),
       comment: '文章简介',
     },
     content: {
@@ -22,7 +22,7 @@ module.exports = app => {
       comment: '文章内容',
     },
     img_url: {
-      type: TEXT,
+      type: STRING(300),
       comment: '文章图片地址',
     },
     views: {

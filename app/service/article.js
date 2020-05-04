@@ -100,15 +100,22 @@ class ArticleService extends Service {
   // 获取文章列表
   async getList(params) {
     const { ctx } = this;
-    const { limit, offset } = params;
+    const { limit, offset, label_id, name } = params;
+    const where = label_id && name ? {
+      id: label_id,
+      name,
+    } : {};
     const result = await ctx.model.Article.findAndCountAll({
       offset: (offset - 1) * limit,
       limit: offset * limit,
-      attributes: [ 'id', 'user_id', 'title', 'description', 'img_url', 'views', 'comment', 'date' ],
+      attributes: [ 'id', 'user_id', 'title', 'description', 'img_url', 'views', 'comment', 'date', 'like_count' ],
+      distinct: true,
       include: [
         {
+          required: false,
           model: ctx.model.Label,
           attributes: [ 'id', 'name' ],
+          where,
           through: {
             // 指定中间表的属性，这里表示不需要任何中间表的属性
             attributes: [],

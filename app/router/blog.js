@@ -23,4 +23,7 @@ module.exports = app => {
   // 获取标签列表
   router.get('/blog/getTagsList', controller.blog.getTagsList);
 
+  // 获取菜单列表
+  router.get('/blog/getMenusList', controller.blog.getMenusList);
+
 };
