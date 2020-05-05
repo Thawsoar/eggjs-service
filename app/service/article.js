@@ -112,7 +112,6 @@ class ArticleService extends Service {
       distinct: true,
       include: [
         {
-          required: false,
           model: ctx.model.Label,
           attributes: [ 'id', 'name' ],
           where,

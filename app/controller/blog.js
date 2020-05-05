@@ -1,6 +1,6 @@
 'use strict';
 const Controller = require('egg').Controller;
-const qs = require('qs')
+const qs = require('qs');
 function toInt(str) {
   if (typeof str === 'number') return str;
   if (!str) return str;
@@ -122,6 +122,50 @@ class BlogController extends Controller {
     const result = await ctx.model.Sort.findAll(query);
     ctx.helper.success(ctx, { msg: '分类列表查询成功', code: 200, res: result });
   }
+  /**
+   * 归档数据
+   * @memberof BlogController
+   */
+  async getArchiveList() {
+    const ctx = this.ctx;
+    const result = await this.app.mysql.query('SELECT id, title, date, version, created_at, updated_at FROM article ORDER BY created_at DESC');
+    if (result) {
+      ctx.helper.success(ctx, { msg: '归档列表查询成功', code: 200, res: result });
+    } else {
+      ctx.helper.fail(ctx, { msg: '获取失败', res: null });
+    }
+  }
+  /**
+   * 归档数据 月份
+   * @memberof BlogController
+   */
+  async getArchiveListByMonth() {
+    const ctx = this.ctx;
+    const result = await this.app.mysql.query("SELECT created_at, DATE_FORMAT(created_at, '%Y年%m月') AS month , COUNT(*) AS sum FROM article GROUP BY month ORDER BY month DESC");
+    if (result) {
+      ctx.helper.success(ctx, { msg: '归档列表查询成功', code: 200, res: result });
+    } else {
+      ctx.helper.fail(ctx, { msg: '获取失败', res: null });
+    }
+  }
+  /**
+   * 获取最新文章 热点文章 随机文章
+   * @memberof BlogController
+   */
+  async getArticleTabs() {
+    const ctx = this.ctx;
+    const obj = [];
+    const result1 = await this.app.mysql.query('SELECT id, title FROM article ORDER BY date DESC LIMIT 5');
+    const result2 = await this.app.mysql.query('SELECT id, title FROM article ORDER BY  `comment` DESC, like_count DESC, views DESC LIMIT 5');
+    const result3 = await this.app.mysql.query('SELECT id, title FROM article  ORDER BY  RAND() LIMIT 5');
+    obj.push(result1, result2, result3);
+    if (obj.length) {
+      ctx.helper.success(ctx, { msg: '归档列表查询成功', code: 200, res: obj });
+    } else {
+      ctx.helper.fail(ctx, { msg: '获取失败', res: null });
+    }
+  }
 }
+
 
 module.exports = BlogController;

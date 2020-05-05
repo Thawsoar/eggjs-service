@@ -26,4 +26,13 @@ module.exports = app => {
   // 获取菜单列表
   router.get('/blog/getMenusList', controller.blog.getMenusList);
 
+  // 获取归档数据
+  router.get('/blog/getArchiveList', controller.blog.getArchiveList);
+
+  // 获取归档数据 月份
+  router.get('/blog/getArchiveListByMonth', controller.blog.getArchiveListByMonth);
+
+  // 获取最新文章 热点文章 随机文章
+  router.get('/blog/getArticleTabs', controller.blog.getArticleTabs);
+
 };
