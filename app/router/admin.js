@@ -27,4 +27,6 @@ module.exports = app => {
   router.resources('labels', '/api/v1/labels', jwt, controller.labels);
   // 文章管理
   router.resources('articles', '/api/v1/articles', jwt, controller.articles);
+  // 友链管理
+  router.resources('articles', '/api/v1/friendlinks', jwt, controller.friendlinks);
 };

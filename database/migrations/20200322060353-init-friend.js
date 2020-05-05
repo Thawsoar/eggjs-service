@@ -3,7 +3,7 @@
 module.exports = {
   // 在执行数据库升级时调用的函数，创建 friend 表
   up: async (queryInterface, Sequelize) => {
-    const { STRING, DATE, UUID } = Sequelize;
+    const { STRING, DATE, UUID, INTEGER } = Sequelize;
     await queryInterface.createTable('friend', {
       id: {
         type: UUID,
@@ -37,7 +37,9 @@ module.exports = {
         type: DATE,
         comment: '修改时间',
       },
-      version: true,
+      version: {
+        type: INTEGER(11),
+      },
     });
   },
   // 在执行数据库降级时调用的函数，删除 friend 表

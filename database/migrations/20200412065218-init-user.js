@@ -60,7 +60,9 @@ module.exports = {
         type: DATE,
         comment: '修改时间',
       },
-      version: true,
+      version: {
+        type: INTEGER(11),
+      },
     });
   },
   // 在执行数据库降级时调用的函数，删除 user 表
