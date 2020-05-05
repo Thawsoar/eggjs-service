@@ -165,6 +165,23 @@ class BlogController extends Controller {
       ctx.helper.fail(ctx, { msg: '获取失败', res: null });
     }
   }
+  /**
+   * 获取友链
+   * @memberof BlogController
+   */
+  async getFriendLinks() {
+    const ctx = this.ctx;
+    const result = await ctx.model.FriendLink.findAll({
+      where: {
+        state: true,
+      },
+    });
+    if (result.length) {
+      ctx.helper.success(ctx, { msg: '归档列表查询成功', code: 200, res: result });
+    } else {
+      ctx.helper.fail(ctx, { msg: '获取失败', res: null });
+    }
+  }
 }
 
 

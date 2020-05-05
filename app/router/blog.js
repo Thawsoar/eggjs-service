@@ -35,4 +35,7 @@ module.exports = app => {
   // 获取最新文章 热点文章 随机文章
   router.get('/blog/getArticleTabs', controller.blog.getArticleTabs);
 
+  // 获取友链
+  router.get('/blog/getFriendLinks', controller.blog.getFriendLinks);
+
 };
