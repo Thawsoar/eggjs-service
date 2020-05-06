@@ -154,13 +154,13 @@ class BlogController extends Controller {
    */
   async getArticleTabs() {
     const ctx = this.ctx;
-    const obj = [];
+    const result = [];
     const result1 = await this.app.mysql.query('SELECT id, title FROM article ORDER BY date DESC LIMIT 5');
     const result2 = await this.app.mysql.query('SELECT id, title FROM article ORDER BY  `comment` DESC, like_count DESC, views DESC LIMIT 5');
     const result3 = await this.app.mysql.query('SELECT id, title FROM article  ORDER BY  RAND() LIMIT 5');
-    obj.push(result1, result2, result3);
-    if (obj.length) {
-      ctx.helper.success(ctx, { msg: '归档列表查询成功', code: 200, res: obj });
+    result.push(result1, result2, result3);
+    if (result.length) {
+      ctx.helper.success(ctx, { msg: '归档列表查询成功', code: 200, res: result });
     } else {
       ctx.helper.fail(ctx, { msg: '获取失败', res: null });
     }
