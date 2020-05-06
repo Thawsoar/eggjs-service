@@ -34,7 +34,19 @@ class BlogController extends Controller {
    */
   async show() {
     const ctx = this.ctx;
-    const result = await ctx.service.blog.getDetail(ctx.params.id);
+    const data = await ctx.service.blog.getDetail(ctx.params.id);
+    const lastsql = `
+      select id from article where id=(select max(id) from article where id < '${ctx.params.id}') 
+    `;
+    const nextsql = `
+      select id from article where id=(select min(id) from article where id > '${ctx.params.id}')
+    `;
+    // 当前id 的上一条id和下一条id
+    const last_result = await ctx.app.model.query(lastsql, { type: 'SELECT' });
+    const next_result = await ctx.app.model.query(nextsql, { type: 'SELECT' });
+    const result = data.toJSON();
+    result.last_id = last_result && last_result.length ? last_result[0].id : null;
+    result.next_id = next_result && next_result.length ? next_result[0].id : null;
     if (result) {
       ctx.helper.success(ctx, { msg: '文章详情查询成功', code: 200, res: result });
     } else {

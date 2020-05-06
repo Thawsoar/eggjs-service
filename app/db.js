@@ -28,7 +28,6 @@ function defineModel(app, name, attributes) {
       };
     }
   }
-  console.log('==============',app.model)
   return app.model.define(name, attrs, {
     created_at: 'created_at',
     updated_at: 'updated_at',

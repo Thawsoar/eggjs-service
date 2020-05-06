@@ -37,7 +37,7 @@ module.exports = {
         },
       });
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
   },
   // 在执行数据库降级时调用的函数，删除 friend_link 表
