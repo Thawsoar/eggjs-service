@@ -201,12 +201,63 @@ class BlogController extends Controller {
   async setArticleLike() {
     const ctx = this.ctx;
     const { id } = ctx.params;
-    console.log('------------------', id)
     const result = await this.app.mysql.query('update article set like_count = (like_count + ?) where id = ?', [ 1, id ]);
     if (result) {
       ctx.helper.success(ctx, { msg: '点赞成功', code: 200, res: null });
     } else {
       ctx.helper.fail(ctx, { msg: '点赞失败', res: null });
+    }
+  }
+  /**
+   * 评论
+   * @memberof BlogController
+   */
+  async createComment() {
+    const ctx = this.ctx;
+    const params = {
+      ...ctx.request.body,
+    };
+
+    // 定义创建接口的请求参数规则
+    const createRule = {
+      user_email: {
+        required: true,
+        type: 'string',
+      },
+      user_nickname: {
+        required: true,
+        type: 'string',
+      },
+      content: {
+        required: true,
+        type: 'string',
+      },
+      article_id: {
+        required: true,
+        type: 'string',
+      },
+    };
+
+    ctx.validate(createRule, params);
+    const result = await ctx.service.blog.createComment(params);
+    if (result) {
+      ctx.helper.success(ctx, { msg: '创建评论成功', code: 200, res: null });
+    } else {
+      ctx.helper.fail(ctx, { msg: '创建评论失败', res: null });
+    }
+  }
+  /**
+   *  查询评论列表
+   * @memberof BlogController
+   */
+  async getComment() {
+    const ctx = this.ctx;
+    const { articleId } = ctx.query;
+    const result = await ctx.service.blog.getComment(articleId);
+    if (result) {
+      ctx.helper.success(ctx, { msg: '查询评论成功', code: 200, res: result });
+    } else {
+      ctx.helper.fail(ctx, { msg: '查询评论失败', res: null });
     }
   }
 }

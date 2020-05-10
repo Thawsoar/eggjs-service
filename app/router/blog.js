@@ -41,4 +41,10 @@ module.exports = app => {
   // 文章点赞
   router.post('/blog/article/like/:id', controller.blog.setArticleLike);
 
+  // 创建评论
+  router.post('/blog/comment/create', controller.blog.createComment);
+
+  // 查询评论列表
+  router.get('/blog/comment/getList', controller.blog.getComment);
+
 };

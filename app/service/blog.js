@@ -64,6 +64,22 @@ class BlogService extends Service {
     });
     return result;
   }
+  // 创建评论
+  async createComment(params) {
+    return await this.app.model.Comment.create(params);
+  }
+  // 查询评论列表
+  async getComment(id) {
+    const result = await this.app.model.Comment.findAndCountAll({
+      where: {
+        article_id: id,
+      },
+      order: [
+        [ 'createdAt', 'DESC' ],
+      ],
+    });
+    return result;
+  }
 }
 
 module.exports = BlogService;
