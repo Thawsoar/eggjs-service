@@ -38,4 +38,7 @@ module.exports = app => {
   // 获取友链
   router.get('/blog/getFriendLinks', controller.blog.getFriendLinks);
 
+  // 文章点赞
+  router.post('/blog/article/like/:id', controller.blog.setArticleLike);
+
 };

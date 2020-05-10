@@ -194,6 +194,21 @@ class BlogController extends Controller {
       ctx.helper.fail(ctx, { msg: '获取失败', res: null });
     }
   }
+  /**
+   * 文章点赞 +1
+   * @memberof BlogController
+   */
+  async setArticleLike() {
+    const ctx = this.ctx;
+    const { id } = ctx.params;
+    console.log('------------------', id)
+    const result = await this.app.mysql.query('update article set like_count = (like_count + ?) where id = ?', [ 1, id ]);
+    if (result) {
+      ctx.helper.success(ctx, { msg: '点赞成功', code: 200, res: null });
+    } else {
+      ctx.helper.fail(ctx, { msg: '点赞失败', res: null });
+    }
+  }
 }
 
 
