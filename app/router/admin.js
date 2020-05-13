@@ -29,4 +29,6 @@ module.exports = app => {
   router.resources('articles', '/api/v1/articles', jwt, controller.articles);
   // 友链管理
   router.resources('articles', '/api/v1/friendlinks', jwt, controller.friendlinks);
+  // 评论管理
+  router.resources('comments', '/api/v1/comments', jwt, controller.comments);
 };

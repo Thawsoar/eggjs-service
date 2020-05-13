@@ -25,7 +25,7 @@ class ArticlesController extends Controller {
     const ctx = this.ctx;
     // const query = { limit: toInt(ctx.query.limit), offset: toInt(ctx.query.offset) };
     const limit = toInt(ctx.query.limit) || 10;
-    const offset = toInt(ctx.query.offset) || 0;
+    const offset = toInt(ctx.query.offset) || 1;
     const query = { limit, offset };
 
     const result = await ctx.service.article.getList(query);
