@@ -54,6 +54,7 @@ module.exports = app => {
       // 中间表的model
       through: app.model.SetArtitleSort,
     });
+    Article.hasMany(app.model.Comment);
   };
   return Article;
 };

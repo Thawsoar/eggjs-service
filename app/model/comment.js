@@ -44,6 +44,9 @@ module.exports = app => {
       comment: '父级评论ID',
     },
   });
+  Comment.associate = () => {
+    Comment.belongsTo(app.model.Article, { foreignKey: 'article_id', targetKey: 'id' });
 
+  };
   return Comment;
 };

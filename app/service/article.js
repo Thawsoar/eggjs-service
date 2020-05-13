@@ -105,6 +105,7 @@ class ArticleService extends Service {
       id: label_id,
       name,
     } : {};
+    // const { fn, col } = ctx.app.Sequelize;
     const result = await ctx.model.Article.findAndCountAll({
       offset: (offset - 1) * limit,
       limit: offset * limit,
@@ -128,6 +129,10 @@ class ArticleService extends Service {
             attributes: [],
           },
         },
+        // {
+        //   model: ctx.model.Comment,
+        //   // attributes: [],
+        // },
       ],
       includeIgnoreAttributes: true,
     });
@@ -157,6 +162,19 @@ class ArticleService extends Service {
       ],
       includeIgnoreAttributes: true,
     });
+    return result;
+  }
+  // 设置文章评论数量
+  async setArticleComments(id) {
+    // const { ctx } = this;
+    const countSql = `
+      SELECT COUNT(*) as count FROM comment WHERE article_id = ?
+    `;
+    const count = await this.app.mysql.query(countSql, [ id ]);
+    const sql = `
+      UPDATE article SET comment = ? WHERE id = ?
+    `;
+    const result = await this.app.mysql.query(sql, [ count[0].count, id ]);
     return result;
   }
 }

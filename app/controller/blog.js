@@ -241,6 +241,7 @@ class BlogController extends Controller {
     ctx.validate(createRule, params);
     const result = await ctx.service.blog.createComment(params);
     if (result) {
+      await ctx.service.article.setArticleComments(params.article_id);
       ctx.helper.success(ctx, { msg: '创建评论成功', code: 200, res: null });
     } else {
       ctx.helper.fail(ctx, { msg: '创建评论失败', res: null });
