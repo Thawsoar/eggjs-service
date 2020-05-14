@@ -166,7 +166,6 @@ class ArticleService extends Service {
   }
   // 设置文章评论数量
   async setArticleComments(id) {
-    // const { ctx } = this;
     const countSql = `
       SELECT COUNT(*) as count FROM comment WHERE article_id = ?
     `;

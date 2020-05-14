@@ -9,15 +9,17 @@ class CommentService extends Service {
     if (!result) {
       this.ctx.throw(404, 'role is not found');
     }
+    await this.app.service.article.setArticleComments(params.article_id);
     return result;
   }
-  // 创建
+  // 更新
   async update(id, params) {
     const label = await this.app.model.Comment.findByPk(id);
     if (!label) {
       return false;
     }
     await label.update(params);
+    await this.app.service.article.setArticleComments(params.article_id);
     return label;
   }
   // 查询标签详情
@@ -41,15 +43,11 @@ class CommentService extends Service {
       WHERE c.article_id = a.id
       LIMIT ? , ?
     `;
-    const sql1 = `
+    const countSql = `
       SELECT count(*) as count FROM comment
     `;
     const rows = await this.app.mysql.query(sql, [ (offset - 1) * limit, offset * limit ]);
-    const count = await this.app.mysql.query(sql1);
-    // const result = await ctx.model.Comment.findAndCountAll({
-    //   offset:,
-    //   limit:,
-    // });
+    const count = await this.app.mysql.query(countSql);
     return {
       rows,
       count: count[0].count,

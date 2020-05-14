@@ -39,12 +39,14 @@ class CommentsController extends Controller {
     };
     ctx.validate(createRule, params);
     const result = await ctx.service.comment.create(params);
+    await ctx.service.article.setArticleComments(params.article_id);
     ctx.helper.success(ctx, { msg: '创建评论成功', res: result });
   }
 
   async update() {
     const ctx = this.ctx;
     const result = await ctx.service.comment.update(ctx.params.id, ctx.request.body);
+    await ctx.service.article.setArticleComments(ctx.params.article_id);
     if (!result) {
       ctx.helper.fail(ctx, { msg: '更新评论失败', res: result });
       return;
@@ -61,6 +63,7 @@ class CommentsController extends Controller {
       return;
     }
     await result.destroy();
+    await ctx.service.article.setArticleComments(result.toJSON().article_id);
     ctx.helper.success(ctx, { msg: '删除评论成功', res: result });
   }
 }
