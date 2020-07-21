@@ -153,7 +153,7 @@ class BlogController extends Controller {
    */
   async getArchiveListByMonth() {
     const ctx = this.ctx;
-    const result = await this.app.mysql.query("SELECT created_at, DATE_FORMAT(created_at, '%Y-%m') AS month , COUNT(*) AS sum FROM article GROUP BY month ORDER BY month DESC");
+    const result = await this.app.mysql.query("SELECT DATE_FORMAT(created_at, '%Y-%m') AS month , COUNT(*) AS sum FROM article GROUP BY month ORDER BY month DESC");
     if (result) {
       ctx.helper.success(ctx, { msg: '归档列表查询成功', code: 200, res: result });
     } else {

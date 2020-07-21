@@ -54,7 +54,7 @@ module.exports = app => {
       // 中间表的model
       through: app.model.SetArtitleSort,
     });
-    Article.hasMany(app.model.Comment);
+    Article.hasMany(app.model.Comment, { foreignKey: 'article_id', targetKey: 'id'});
   };
   return Article;
 };
