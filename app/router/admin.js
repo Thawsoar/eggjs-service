@@ -2,9 +2,9 @@
 module.exports = app => {
   const { router, controller, jwt } = app;
   // 登录
-  router.post('/login', controller.login.login);
+  router.post('/api/login', controller.login.login);
   // 登出
-  router.post('/logout', controller.login.logout);
+  router.post('/api/logout', controller.login.logout);
   // github 登录获取登录用户信息
   router.post('/api/github/userInfo', controller.login.getGithubUserInfo);
   // 挂载鉴权路由
@@ -18,7 +18,7 @@ module.exports = app => {
 
 
   // 获取用户信息
-  router.get('/getUserInfo', jwt, controller.login.getUserInfo);
+  router.get('/api/getUserInfo', jwt, controller.login.getUserInfo);
   // 用户管理
   router.resources('users', '/api/v1/users', jwt, controller.users);
   // 分类管理
