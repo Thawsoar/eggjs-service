@@ -19,7 +19,6 @@ module.exports = app => {
 
   // 获取番剧列表
   router.get('/blog/getFollowList', controller.blog.getFollowList);
-
   // 获取标签列表
   router.get('/blog/getTagsList', controller.blog.getTagsList);
 
