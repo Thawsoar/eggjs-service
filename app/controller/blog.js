@@ -90,6 +90,39 @@ class BlogController extends Controller {
       ctx.helper.fail(ctx, { msg: '获取失败', res: null });
     }
   }
+  // 一言
+  async getHitokoto() {
+    const ctx = this.ctx;
+    const result = await ctx.curl('https://v1.hitokoto.cn/nm/playlist/4989885272', {
+      dataType: 'json',
+    });
+
+    const Ids = [];
+    result.data.playlist.tracks.map(value => Ids.push(value.id));
+    let ids = [];
+    switch (typeof Ids) {
+      case 'number':
+        ids = [ Ids ];
+        break;
+      case 'object':
+        if (!Array.isArray(Ids)) {
+          return;
+        }
+        ids = Ids;
+        break;
+      default:
+        break;
+    }
+
+    const { data } = await ctx.curl(`https://v1.hitokoto.cn/nm/summary/${ids.join(',')}?lyric=true&common=true`, {
+      dataType: 'json',
+    });
+    if (result) {
+      ctx.helper.success(ctx, { msg: '获取成功', code: 200, res: data.songs });
+    } else {
+      ctx.helper.fail(ctx, { msg: '获取失败', res: null });
+    }
+  }
 
   /**
    * B站追番列表
@@ -103,7 +136,7 @@ class BlogController extends Controller {
    */
   async getFollowList() {
     const ctx = this.ctx;
-    const { type = 1, follow_status = 2, pn = 1, ps = 100, vmid } = ctx.query;
+    const { type = 1, follow_status = 2, pn = 1, ps = 30, vmid } = ctx.query;
     const params = {
       type,
       follow_status,
@@ -121,7 +154,7 @@ class BlogController extends Controller {
     if (result.status === 200) {
       ctx.helper.success(ctx, { msg: '获取成功', code: 200, res: result.data.data });
     } else {
-      ctx.helper.fail(ctx, { msg: '获取失败', res: null });
+      ctx.helper.fail(ctx, { msg: '获取失败', res: [] });
     }
   }
   /**

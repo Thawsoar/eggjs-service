@@ -17,6 +17,9 @@ module.exports = app => {
   // 获取错误页面
   router.get('/blog/getErrorData', controller.blog.getErrorData);
 
+  // 获取一言数据
+  router.get('/blog/getHitokoto', controller.blog.getHitokoto);
+
   // 获取番剧列表
   router.get('/blog/getFollowList', controller.blog.getFollowList);
   // 获取标签列表
@@ -45,5 +48,7 @@ module.exports = app => {
 
   // 查询评论列表
   router.get('/blog/comment/getList', controller.blog.getComment);
+  router.post('/wxmini/openid', controller.wxmini.openid);
+  router.get('/wxmini/getAccessToken', controller.wxmini.getAccessToken);
 
 };
