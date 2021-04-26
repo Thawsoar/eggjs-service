@@ -21,7 +21,8 @@ class CommentsController extends Controller {
     const ctx = this.ctx;
     const limit = toInt(ctx.query.limit) || 10;
     const offset = toInt(ctx.query.offset) || 1;
-    const query = { limit, offset };
+    const id = toInt(ctx.query.id);
+    const query = { limit, offset, id };
     const result = await ctx.service.comment.getList(query);
     ctx.helper.success(ctx, { msg: '评论列表查询成功', code: 200, res: result });
   }

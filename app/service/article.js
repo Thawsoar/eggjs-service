@@ -104,8 +104,9 @@ class ArticleService extends Service {
     const where = label_id && name ? {
       id: label_id,
       name,
-    } : {};
+    } : null;
     // const { fn, col } = ctx.app.Sequelize;
+    // SELECT a.*, l.* from article a LEFT JOIN set_artitle_label al ON a.id = al.article_id  LEFT JOIN label l on al.label_id = l.id
     const result = await ctx.model.Article.findAndCountAll({
       offset: (offset - 1) * limit,
       limit: offset * limit,
