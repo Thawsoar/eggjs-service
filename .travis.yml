@@ -17,11 +17,16 @@ before_install:
 - chmod 600 ~/.ssh/id_rsa
 - chmod u+x *.sh
 script:
-- sh ./deploy.sh
 after_success:
-- ssh -o StrictHostKeyChecking=no root@47.105.40.207 ' cd /data/www/ && rm -rf ./backend
-  && git clone -b deploy git@github.com:Thawsoar/eggjs-service.git && mv eggjs-service
-  backend && cd backend && tar zxvf release.tgz && yarn start --ignore-stderr'
+- ssh -o StrictHostKeyChecking=no root@47.105.40.207
+  ' cd /data/www/
+    && rm -rf ./backend
+    && git clone git@github.com:Thawsoar/eggjs-service.git
+    && mv eggjs-service backend 
+    && cd backend
+    && yarn install --production
+    && yarn start --ignore-stderr
+  '
 env:
   global:
   - GH_REF: github.com/Thawsoar/eggjs-service.git
