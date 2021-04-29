@@ -18,6 +18,8 @@ before_install:
   -in id_rsa.enc -out ~/.ssh/id_rsa -d
 - chmod 600 ~/.ssh/id_rsa
 - chmod u+x *.sh
+script:
+-
 after_success:
 - ssh -o StrictHostKeyChecking=no root@47.105.40.207
   ' cd /data/www/
