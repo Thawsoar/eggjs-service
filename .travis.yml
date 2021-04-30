@@ -22,7 +22,7 @@ after_success:
     && git clone git@github.com:Thawsoar/eggjs-service.git
     && mv eggjs-service backend
     && cd backend
-    && yarn install --production && yarn start --ignore-stderr
+    && yarn install --production && yarn stop && yarn start --ignore-stderr
   '
 env:
   global:
